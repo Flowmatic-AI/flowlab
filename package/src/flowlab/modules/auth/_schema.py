@@ -1,6 +1,6 @@
 from flowlab._exceptions import SchemaMismatch
 from flowlab.modules.auth._models import ApiKey, user_model
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 from flowlab.modules.db.orm import Model, model_meta
 
 

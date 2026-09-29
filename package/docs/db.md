@@ -5,7 +5,7 @@ SQLite works out of the box (`sqlite3` ships with Python); PostgreSQL and
 MySQL/MariaDB need a driver.
 
 ```python
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 ```
 
 ## Connecting

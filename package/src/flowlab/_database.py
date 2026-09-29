@@ -9,7 +9,7 @@ from fastapi import Depends
 
 from flowlab._settings import DatabaseSettings, DBDriver
 from flowlab._state import get_app
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 
 DB_API_DRIVER_MODULES = ("psycopg", "mysql.connector")
 

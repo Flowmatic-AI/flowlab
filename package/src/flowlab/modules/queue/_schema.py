@@ -1,7 +1,7 @@
 from flowlab._exceptions import SchemaMismatch
 from flowlab._settings import QueueDriver
 from flowlab._state import get_app
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 
 TABLES = {
     "jobs": ("id", "uuid", "queue", "payload", "attempts", "reservation", "available_at", "created_at"),

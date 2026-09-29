@@ -4,7 +4,7 @@ from flowlab import FlowLab
 from flowlab._database import get_db
 from flowlab.modules.auth import ApiKey, User
 from flowlab.modules.auth._security import hash_api_key, verify_password
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 
 PASSWORD = "correct horse battery staple"
 

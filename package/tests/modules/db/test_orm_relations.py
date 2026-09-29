@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 from flowlab.modules.db.orm import (
     AutoIncrement,
     BelongsTo,

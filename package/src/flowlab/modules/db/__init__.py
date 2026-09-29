@@ -19,9 +19,11 @@ from flowlab.modules.db._helpers import (
     sub_query,
 )
 from flowlab.modules.db._query_with_params import QueryWithParams
+from flowlab.modules.db.database import DB
 from flowlab.modules.db.query.expressions import PostgresArray
 
 __all__ = [
+    "DB",
     "AdapterError",
     "ConnectionLimitError",
     "DatabaseError",

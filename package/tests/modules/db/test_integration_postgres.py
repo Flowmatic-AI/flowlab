@@ -24,9 +24,8 @@ from typing import Any
 
 import pytest
 
-from flowlab.modules.db import PostgresArray, QueryWithParams, expression, identifier, raw
+from flowlab.modules.db import DB, PostgresArray, QueryWithParams, expression, identifier, raw
 from flowlab.modules.db.adapters import AdapterABC, PsycopgAdapter
-from flowlab.modules.db.database import DB
 from flowlab.modules.db.dialects import PostgresqlDialect
 from flowlab.modules.db.query import AlterTableQuery, Condition, CreateTableQuery, InsertQuery, OnConflict, SelectQuery
 from flowlab.modules.db.query.ddl import AddColumn, Column

@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from fastmcp.server.auth import AuthProvider
 
 from flowlab._routing import Router
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 
 if TYPE_CHECKING:
     from flowlab._flowlab import FlowLab

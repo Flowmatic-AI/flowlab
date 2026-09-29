@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from flowlab.modules.db import QueryError, QueryWithParams
+from flowlab.modules.db import DB, QueryError, QueryWithParams
 from flowlab.modules.db.adapters import SQLiteAdapter
-from flowlab.modules.db.database import DB
 from flowlab.modules.db.dialects import SQLDialect, SQLiteDialect
 from flowlab.modules.db.query import InsertQuery
 

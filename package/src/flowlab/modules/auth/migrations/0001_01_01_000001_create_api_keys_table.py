@@ -6,7 +6,7 @@ from flowlab.modules.db.query.enums import ReferentialActionEnum
 from flowlab.modules.migrator import MigrationABC
 
 if TYPE_CHECKING:
-    from flowlab.modules.db.database import DB
+    from flowlab.modules.db import DB
 
 
 class CreateApiKeysTable(MigrationABC):

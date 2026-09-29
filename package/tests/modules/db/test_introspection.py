@@ -14,8 +14,7 @@ from collections.abc import Iterator
 
 import pytest
 
-from flowlab.modules.db import QueryError
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, QueryError
 from flowlab.modules.db.database._introspection import (
     parse_columns,
     parse_constraints,

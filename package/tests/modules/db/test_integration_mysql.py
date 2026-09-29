@@ -25,9 +25,8 @@ from typing import Any, cast
 
 import pytest
 
-from flowlab.modules.db import QueryError, QueryWithParams
+from flowlab.modules.db import DB, QueryError, QueryWithParams
 from flowlab.modules.db.adapters import MySQLAdapter
-from flowlab.modules.db.database import DB
 from flowlab.modules.db.dialects import MySQLDialect
 from flowlab.modules.db.query import OnConflict, SelectQuery
 from flowlab.modules.db.query.ddl import (

@@ -9,8 +9,7 @@ from typing import Any, Self
 
 import pytest
 
-from flowlab.modules.db import AdapterError
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, AdapterError
 
 
 def _run_in_thread(callback: Any) -> Any:

@@ -7,7 +7,7 @@ import pytest
 db_module = pytest.importorskip("flowlab.modules.db.database")
 
 from flowlab.modules.cache import Cache
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 
 
 def _cache() -> Cache:

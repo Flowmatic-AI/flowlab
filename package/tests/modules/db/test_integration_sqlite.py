@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from flowlab.modules.db import QueryWithParams
+from flowlab.modules.db import DB, QueryWithParams
 from flowlab.modules.db.adapters import SQLiteAdapter
-from flowlab.modules.db.database import DB
 from flowlab.modules.db.dialects import SQLiteDialect
 from flowlab.modules.db.query.ddl import Column
 from flowlab.modules.db.result import ResultABC
@@ -214,7 +213,7 @@ def test_query_builder_select_integration() -> None:
     )
     adapter.query_with_params(dialect, qwp)
 
-    from flowlab.modules.db.database import DB
+    from flowlab.modules.db import DB
     from flowlab.modules.db.query import SelectQuery
 
     db = DB(adapter, dialect)

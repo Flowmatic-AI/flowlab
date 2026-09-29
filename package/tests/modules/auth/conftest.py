@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from flowlab import FlowLab
 from flowlab._settings import AuthSettings, DatabaseSettings, FastAPISettings, FastMCPSettings, TyperSettings
 from flowlab.modules.auth import MIGRATIONS_DIR
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 from flowlab.modules.migrator import publish_migrations
 
 JWT_SECRET = "test-suite-secret-at-least-32-bytes-long"

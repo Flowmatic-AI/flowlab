@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Self
 from flowlab.modules.queue.adapters._base import AdapterABC, FailedJob, ReservedJob
 
 if TYPE_CHECKING:
-    from flowlab.modules.db.database import DB
+    from flowlab.modules.db import DB
 
 
 class Queue:

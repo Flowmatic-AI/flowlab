@@ -2,7 +2,7 @@ import shutil
 from collections.abc import Collection, Mapping
 from pathlib import Path
 
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 from flowlab.modules.migrator._migrator import Migrator
 
 

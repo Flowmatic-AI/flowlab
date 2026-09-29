@@ -1,6 +1,6 @@
 from flowlab._settings import QueueDriver, QueueSettings
 from flowlab._state import get_app
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 from flowlab.modules.queue import Queue
 
 

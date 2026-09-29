@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 from flowlab.modules.auth import ApiKey
 from flowlab.modules.auth._security import API_KEY_PREFIX, hash_api_key
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 
 PASSWORD = "correct horse battery staple"
 

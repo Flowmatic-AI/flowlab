@@ -36,7 +36,7 @@ from flowlab._settings import (
 )
 from flowlab.modules import queue
 from flowlab.modules.cache import Cache as CacheStore
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 from flowlab.modules.migrator import Migrator
 from flowlab.modules.migrator._schema import migrator as open_migrator
 from flowlab.modules.migrator._schema import publish_migrations

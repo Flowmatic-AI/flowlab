@@ -6,7 +6,7 @@ from fastapi import Depends
 from flowlab._settings import CacheDriver, CacheSettings
 from flowlab._state import get_app
 from flowlab.modules.cache import Cache as CacheStore
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 
 
 def connect_cache_store(settings: CacheSettings, db: Database) -> CacheStore:

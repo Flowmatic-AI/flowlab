@@ -6,7 +6,7 @@ from flowlab import FlowLab
 from flowlab._settings import AuthSettings, DatabaseSettings, FastAPISettings, FastMCPSettings, TyperSettings
 from flowlab.modules.auth import MIGRATIONS_DIR, User
 from flowlab.modules.auth import _users as service
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 from flowlab.modules.migrator import publish_migrations
 
 PASSWORD = "correct horse battery staple"

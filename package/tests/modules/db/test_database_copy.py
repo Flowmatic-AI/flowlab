@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
+from flowlab.modules.db import DB
 from flowlab.modules.db._exceptions import DatabaseError
-from flowlab.modules.db.database import DB
 from flowlab.modules.db.database._copy import dependency_order
 from flowlab.modules.db.query.ddl import Column, ForeignKeyConstraint, TableConstraints, TableDescription
 from flowlab.modules.db.query.enums import TypeEnum

@@ -10,7 +10,7 @@ from flowlab.modules.migrator._loader import discover_migration_files, load_migr
 from flowlab.modules.migrator._template import render_migration
 
 if TYPE_CHECKING:
-    from flowlab.modules.db.database import DB
+    from flowlab.modules.db import DB
     from flowlab.modules.migrator._migration_abc import MigrationABC
 
 

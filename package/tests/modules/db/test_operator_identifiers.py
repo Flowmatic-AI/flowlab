@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from flowlab.modules.db import PostgresArray, raw
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, PostgresArray, raw
 
 
 def test_where_operator_escapes_the_identifier() -> None:

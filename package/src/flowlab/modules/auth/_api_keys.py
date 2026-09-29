@@ -2,8 +2,8 @@ from fastapi import HTTPException, status
 
 from flowlab.modules.auth._models import ApiKey, BaseUser, user_model
 from flowlab.modules.auth._security import API_KEY_HINT_LENGTH, generate_api_key, hash_api_key
+from flowlab.modules.db import DB as Database
 from flowlab.modules.db import identifier, now
-from flowlab.modules.db.database import DB as Database
 from flowlab.modules.db.orm import SelectModelQuery
 
 

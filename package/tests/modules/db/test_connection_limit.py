@@ -10,8 +10,7 @@ from typing import Any, Self
 
 import pytest
 
-from flowlab.modules.db import AdapterError, ConnectionLimitError
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, AdapterError, ConnectionLimitError
 
 
 class _Holders:

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from flowlab.modules.db import alias, expression, raw
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, alias, expression, raw
 
 
 def test_order_by_accepts_a_qualified_list_a_raw_fragment_and_an_expression() -> None:

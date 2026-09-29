@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 from flowlab.modules.migrator import publish_migrations
 from flowlab.modules.migrator._schema import migrator
 from flowlab.modules.queue import MIGRATIONS_DIR, Queue

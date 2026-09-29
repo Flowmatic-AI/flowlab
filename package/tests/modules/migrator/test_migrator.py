@@ -4,8 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from flowlab.modules.db import DatabaseError
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, DatabaseError
 from flowlab.modules.migrator import Migrator
 
 _TEMPLATE = """from flowlab.modules.migrator import MigrationABC

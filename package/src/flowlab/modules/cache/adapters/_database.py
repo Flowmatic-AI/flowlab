@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 from flowlab.modules.cache.adapters._base import AdapterABC
 
 if TYPE_CHECKING:
-    from flowlab.modules.db.database import DB
+    from flowlab.modules.db import DB
 
 
 class DatabaseAdapter(AdapterABC):

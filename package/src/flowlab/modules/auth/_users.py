@@ -17,8 +17,8 @@ from flowlab.modules.auth._security import (
     mint_token,
     verify_password,
 )
+from flowlab.modules.db import DB as Database
 from flowlab.modules.db import now
-from flowlab.modules.db.database import DB as Database
 
 
 def find_by_email(db: Database, email: str) -> BaseUser | None:

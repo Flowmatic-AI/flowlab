@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 from flowlab.modules.db.dialects import SQLDialect
 from flowlab.modules.db.query import InsertQuery, SelectQuery, UpdateQuery
 

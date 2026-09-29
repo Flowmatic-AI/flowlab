@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from flowlab.modules.migrator import MigrationABC
 
 if TYPE_CHECKING:
-    from flowlab.modules.db.database import DB
+    from flowlab.modules.db import DB
 
 
 class CreateUsersTable(MigrationABC):

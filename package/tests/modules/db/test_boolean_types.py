@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB
 from flowlab.modules.db.result import MySQLResult
 
 _MYSQL_TINYINT = 1

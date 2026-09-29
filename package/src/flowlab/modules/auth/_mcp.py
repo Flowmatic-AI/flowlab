@@ -11,7 +11,7 @@ from flowlab._routing import MCPRouter
 from flowlab.modules.auth import _api_keys as service
 from flowlab.modules.auth._models import BaseUser, user_model
 from flowlab.modules.auth._security import is_api_key
-from flowlab.modules.db.database import DB as Database
+from flowlab.modules.db import DB as Database
 
 USER_ID_CLAIM = "user_id"
 

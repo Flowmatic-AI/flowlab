@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from flowlab.modules.db import ModelError
-from flowlab.modules.db.database import DB
+from flowlab.modules.db import DB, ModelError
 from flowlab.modules.db.orm import (
     AutoIncrement,
     BelongsTo,
