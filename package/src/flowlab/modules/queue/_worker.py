@@ -29,6 +29,7 @@ class Worker:
         sleep: float = 3,
         max_jobs: int | None = None,
         stop_when_empty: bool = False,
+        max_idle: float | None = None,
         log: Callable[[str], None] = print,
     ) -> None:
         self.queue = queue
@@ -36,13 +37,15 @@ class Worker:
         self.sleep = sleep
         self.max_jobs = max_jobs
         self.stop_when_empty = stop_when_empty
+        self.max_idle = max_idle
         self.log = log
         self._stop = threading.Event()
 
     def run(self) -> int:
-        """Work until stopped, ``max_jobs`` is reached or, with ``stop_when_empty``, the queues are empty. Returns
-        the number of jobs processed."""
+        """Work until stopped, ``max_jobs`` is reached, the queues have been empty for ``max_idle`` seconds or, with
+        ``stop_when_empty``, the queues are empty. Returns the number of jobs processed."""
         processed = 0
+        idle_since: float | None = None
 
         with self._stop_on_signals():
             while not self._stop.is_set():
@@ -52,9 +55,23 @@ class Worker:
                     if self.stop_when_empty:
                         break
 
-                    self._stop.wait(self.sleep)
+                    wait = self.sleep
+
+                    if self.max_idle is not None:
+                        if idle_since is None:
+                            idle_since = time.monotonic()
+
+                        remaining = self.max_idle - (time.monotonic() - idle_since)
+
+                        if remaining <= 0:
+                            break
+
+                        wait = min(wait, remaining)
+
+                    self._stop.wait(wait)
                     continue
 
+                idle_since = None
                 self.process(job)
                 processed += 1
 

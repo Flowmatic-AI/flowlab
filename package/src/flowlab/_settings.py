@@ -50,6 +50,7 @@ class QueueDriver(StrEnum):
     DATABASE = "database"
     REDIS = "redis"
     VALKEY = "valkey"
+    CLOUDTASKS = "cloudtasks"
 
 
 DB_DRIVER_ALIASES = {"postgres": DBDriver.POSTGRESQL}
@@ -282,9 +283,28 @@ class QueueSettings(BaseSettings):
     queue_password: str | None = None
     queue_db: int = 0
     queue_retry_after: float = 90
+    queue_max_idle: float | None = None
+    queue_gcp_project: str | None = None
+    queue_gcp_location: str | None = None
+    queue_target_url: str | None = None
+    queue_service_account: str | None = None
+    queue_push_path: str = "/_flowlab/queue"
+
+    @property
+    def queue_push_url(self) -> str:
+        return f"{(self.queue_target_url or '').rstrip('/')}{self.queue_push_path}"
 
     def queue_options(self) -> dict[str, Any]:
         options: dict[str, Any] = {"retry_after": self.queue_retry_after}
+
+        if self.queue_driver is QueueDriver.CLOUDTASKS:
+            options |= {
+                "project": self.queue_gcp_project,
+                "location": self.queue_gcp_location,
+                "url": self.queue_push_url,
+                "service_account": self.queue_service_account,
+                "audience": self.queue_target_url,
+            }
 
         if self.queue_driver in (QueueDriver.REDIS, QueueDriver.VALKEY):
             options |= {
@@ -301,10 +321,29 @@ class QueueSettings(BaseSettings):
     def _normalize_queue_driver(cls, value: Any) -> Any:
         return _normalize(value)
 
-    @field_validator("queue_password", mode="before")
+    @field_validator(
+        "queue_password",
+        "queue_max_idle",
+        "queue_gcp_project",
+        "queue_gcp_location",
+        "queue_target_url",
+        "queue_service_account",
+        mode="before",
+    )
     @classmethod
     def _empty_string_is_none(cls, value: Any) -> Any:
         return value or None
+
+    @model_validator(mode="after")
+    def _require_cloud_tasks_settings(self) -> "QueueSettings":
+        if self.queue_driver is QueueDriver.CLOUDTASKS:
+            required = ("queue_gcp_project", "queue_gcp_location", "queue_target_url", "queue_service_account")
+            missing = [name.upper() for name in required if getattr(self, name) is None]
+
+            if missing:
+                raise ValueError(f"QUEUE_DRIVER=cloudtasks needs {', '.join(missing)}")
+
+        return self
 
 
 class AuthSettings(BaseSettings):

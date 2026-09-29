@@ -161,7 +161,7 @@ being run).
 - `flowlab.modules.ratelimit`: rate limits for routes and MCP tools, counted in
   the cache. See [docs/ratelimit.md](https://github.com/Flowmatic-AI/flowlab/blob/main/package/docs/ratelimit.md).
 - `flowlab.modules.queue`: background jobs with `@job`, workers and failed-job
-  commands, on the database, Redis or Valkey. See [docs/queue.md](https://github.com/Flowmatic-AI/flowlab/blob/main/package/docs/queue.md).
+  commands, on the database, Redis, Valkey or Google Cloud Tasks. See [docs/queue.md](https://github.com/Flowmatic-AI/flowlab/blob/main/package/docs/queue.md).
 
 Extras: `flowlab[postgres]`, `flowlab[mysql]`, `flowlab[asyncpg]`,
-`flowlab[redis]`, `flowlab[valkey]`, `flowlab[memcached]`, `flowlab[all]`.
+`flowlab[redis]`, `flowlab[valkey]`, `flowlab[memcached]`, `flowlab[gcp]`, `flowlab[all]`.

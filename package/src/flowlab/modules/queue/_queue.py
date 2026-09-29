@@ -58,6 +58,35 @@ class Queue:
 
         return cls(ValkeyAdapter(host, port, db, password, retry_after, **options), default)
 
+    @classmethod
+    def connect_cloud_tasks(
+        cls,
+        db: DB,
+        project: str,
+        location: str,
+        url: str,
+        service_account: str,
+        audience: str | None = None,
+        retry_after: float = 90,
+        default: str = "default",
+        client: Any = None,
+    ) -> Self:
+        """Jobs as Cloud Tasks POSTed to ``url``; failed jobs in ``db``'s ``failed_jobs`` table."""
+        from flowlab.modules.queue.adapters._cloud_tasks import CloudTasksAdapter
+        from flowlab.modules.queue.adapters._database import DatabaseAdapter
+
+        adapter = CloudTasksAdapter(
+            DatabaseAdapter(db),
+            project=project,
+            location=location,
+            url=url,
+            service_account=service_account,
+            audience=audience,
+            retry_after=retry_after,
+            client=client,
+        )
+        return cls(adapter, default)
+
     def push(
         self,
         job: str,

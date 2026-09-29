@@ -1,3 +1,4 @@
+import time
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -200,6 +201,29 @@ def test_jobs_must_be_module_level() -> None:
         @job
         def nested() -> None:
             pass
+
+
+def test_a_worker_stops_once_the_queues_stay_empty_for_max_idle(app: FlowLab) -> None:
+    started = time.monotonic()
+
+    assert Worker(app.queue, sleep=10, max_idle=0.2, log=lambda line: None).run() == 0
+    assert time.monotonic() - started < 2
+
+
+def test_queue_work_stops_after_queue_max_idle(tmp_path: Path) -> None:
+    app = FlowLab(
+        database_settings=DatabaseSettings(db_driver="sqlite", db_name=str(tmp_path / "app.sqlite")),
+        queue_settings=QueueSettings(queue_driver="database", queue_max_idle="0.2"),
+        project_dir=tmp_path,
+    )
+    runner = CliRunner()
+    runner.invoke(app.cli, ["queue:install"])
+    runner.invoke(app.cli, ["migrations:up"])
+    started = time.monotonic()
+
+    assert runner.invoke(app.cli, ["queue:work", "--sleep", "10"]).exit_code == 0
+    assert time.monotonic() - started < 5
+    assert QueueSettings(queue_max_idle="").queue_max_idle is None
 
 
 def test_backoff_per_retry() -> None:

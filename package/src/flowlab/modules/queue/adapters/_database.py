@@ -99,7 +99,17 @@ class DatabaseAdapter(AdapterABC):
 
     def fail(self, job: ReservedJob, exception: str) -> None:
         def move(db: DB) -> None:
-            db.insert(self._failed_table).values(
+            self.record_failure(job, exception, db)
+            self.delete(job)
+
+        self._db.transaction(move)
+
+    def record_failure(self, job: ReservedJob, exception: str, db: DB | None = None) -> None:
+        """Add ``job`` to the failed jobs, without touching the ``jobs`` table."""
+        (
+            (db or self._db)
+            .insert(self._failed_table)
+            .values(
                 {
                     "uuid": job.id,
                     "queue": job.queue,
@@ -107,10 +117,9 @@ class DatabaseAdapter(AdapterABC):
                     "exception": exception,
                     "failed_at": time.time(),
                 }
-            ).execute()
-            self.delete(job)
-
-        self._db.transaction(move)
+            )
+            .execute()
+        )
 
     def size(self, queue: str) -> int:
         return self._count(self._db.select(self._table).where_equals("queue", queue))

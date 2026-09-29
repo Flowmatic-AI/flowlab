@@ -9,20 +9,29 @@ TABLES = {
 }
 
 
+# Cloud Tasks holds the waiting jobs itself; only the failed ones are kept in the database.
+DRIVER_TABLES = {
+    QueueDriver.DATABASE: ("jobs", "failed_jobs"),
+    QueueDriver.CLOUDTASKS: ("failed_jobs",),
+}
+
+
 def check_schema(db: Database) -> None:
-    if get_app().queue_settings.queue_driver is not QueueDriver.DATABASE:
+    needed = DRIVER_TABLES.get(get_app().queue_settings.queue_driver, ())
+
+    if not needed:
         return
 
     tables = set(db.list_tables())
     missing: list[str] = []
 
-    for table, required in TABLES.items():
+    for table in needed:
         if table not in tables:
             missing.append(f"table {table}")
             continue
 
         columns = {column.name for column in db.describe_table(table).columns}
-        missing.extend(f"column {table}.{column}" for column in required if column not in columns)
+        missing.extend(f"column {table}.{column}" for column in TABLES[table] if column not in columns)
 
     if missing:
         raise SchemaMismatch("queue", missing)

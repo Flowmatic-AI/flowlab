@@ -25,5 +25,6 @@ MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
 def module() -> Module:
     from flowlab.modules.queue._commands import commands
+    from flowlab.modules.queue._push import setup
 
-    return Module(name="queue", routers=[commands], migrations=MIGRATIONS_DIR, check=check_schema)
+    return Module(name="queue", routers=[commands], migrations=MIGRATIONS_DIR, setup=setup, check=check_schema)

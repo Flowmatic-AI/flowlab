@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flowlab"
-version = "0.1.0"
+version = "0.2.0"
 description = "An API framework on FastAPI that also serves an MCP server and a command runner from the same app, with database, cache, migrations, auth, queues and rate limiting built in."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -49,6 +49,7 @@ mysql = ["mysql-connector-python>=9.0"]
 redis = ["redis>=5.0"]
 valkey = ["valkey>=6.0"]
 memcached = ["pymemcache>=4.0"]
+gcp = ["google-cloud-tasks>=2.16"]
 all = [
     "psycopg[binary]>=3.1",
     "asyncpg>=0.29",
@@ -56,6 +57,7 @@ all = [
     "redis>=5.0",
     "valkey>=6.0",
     "pymemcache>=4.0",
+    "google-cloud-tasks>=2.16",
 ]
 dev = [
     "build>=1.2",
@@ -69,6 +71,7 @@ dev = [
     "redis>=5.0",
     "valkey>=6.0",
     "pymemcache>=4.0",
+    "google-cloud-tasks>=2.16",
 ]
 
 [project.scripts]
