@@ -9,7 +9,7 @@ app = FlowLab(auth_settings=AuthSettings())
 ```
 
 Passing `auth_settings` turns auth on: the app registers the routers, the `auth` MCP server, the `users:create`,
-`api-keys:create` and `auth:install` commands, and the MCP auth provider. `AuthSettings()` reads `JWT_SECRET` / `JWT_TTL_MINUTES` from the
+`api-keys:create` and `auth:install` commands, and the MCP auth provider. `AuthSettings()` reads `JWT_SECRET`, `JWT_TTL_MINUTES` and the other settings below from the
 environment, so a missing `JWT_SECRET` fails at boot.
 
 ## Your user model
@@ -54,6 +54,7 @@ app = FlowLab(..., auth_settings=AuthSettings(), user_model=User)
 | `JWT_SECRET` | required | HS256 signing secret (use 32+ bytes) |
 | `JWT_TTL_MINUTES` | `60` | login token lifetime |
 | `AUTH_RATE_LIMIT` | `5/minute` | login and register attempts, like `10/5 minutes`; `none` turns it off |
+| `AUTH_REGISTRATION` | `true` | serve `POST /auth/register`; `false` leaves the route out, for apps where users are created by an admin or `users:create` |
 
 `auth.get_auth_settings()` returns `FlowLab.instance().auth`. It raises `FlowLabNotInitialized` before an app exists and
 `AuthNotEnabled` when the app was created without `auth_settings`.
@@ -62,7 +63,7 @@ app = FlowLab(..., auth_settings=AuthSettings(), user_model=User)
 
 | Method and path | Auth | Result |
 | --- | --- | --- |
-| `POST /auth/register` | none | 201 `{access_token, token_type, user}`; 409 on a taken email; 422 on a bad email, a password under 8 characters or over 72 bytes; 429 over `AUTH_RATE_LIMIT` |
+| `POST /auth/register` | none | only when `AUTH_REGISTRATION` is on (the default): 201 `{access_token, token_type, user}`; 409 on a taken email; 422 on a bad email, a password under 8 characters or over 72 bytes; 429 over `AUTH_RATE_LIMIT` |
 | `POST /auth/login` | none | `{access_token, token_type, user}`; 401 "Incorrect email or password" for both unknown email and wrong password; 429 over `AUTH_RATE_LIMIT` |
 | `GET /auth/me` | `Auth` | the current user (the password is never serialized) |
 | `POST /api-keys` | `SessionAuth` | 201 `{api_key, token}`; the token is shown once |
@@ -85,6 +86,26 @@ def things(user: Auth) -> list[str]: ...
 ```
 
 Failures are 401 with `WWW-Authenticate: Bearer`.
+
+## Tokens of your own
+
+Every JWT flowlab signs has a `typ` claim, and `Auth` / `SessionAuth` only accept `typ: "access"`. A token with another
+`typ`, or none at all, is 401 "Invalid token", even when it is signed with `JWT_SECRET` and its `sub` is a real user
+id. When a project needs tokens of its own (a participant link, a screen or device token), mint them with a type of
+their own so they can never log in as the user with the same id:
+
+```python
+from datetime import timedelta
+
+from flowlab.modules.auth import TokenExpired, TokenInvalid, decode_token, mint_token
+
+token = mint_token(str(participant.id), typ="participant", ttl=timedelta(hours=8))
+
+payload = decode_token(token, typ="participant")  # raises TokenInvalid for any other typ, TokenExpired when expired
+```
+
+`ttl` defaults to `JWT_TTL_MINUTES`. Don't sign your own tokens with `JWT_SECRET` through PyJWT directly: without the
+right `typ` flowlab rejects them, and giving them `typ: "access"` would make them logins.
 
 ## Rate limiting
 
@@ -165,4 +186,5 @@ database.
 ## Public API
 
 `module`, `BaseUser`, `User`, `user_model`, `Auth`, `SessionAuth`, `get_user`, `get_session_user`, `ApiKey`,
-`CurrentMCPUser`, `get_mcp_user`, `current_user`, `ApiKeyVerifier`, `get_auth_settings`.
+`CurrentMCPUser`, `get_mcp_user`, `current_user`, `ApiKeyVerifier`, `get_auth_settings`, `mint_token`,
+`decode_token`, `TokenExpired`, `TokenInvalid`, `ACCESS_TOKEN_TYPE`.

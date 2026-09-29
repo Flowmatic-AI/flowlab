@@ -1,8 +1,13 @@
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
-from flowlab.modules.auth import User
+from flowlab import FlowLab
+from flowlab._settings import AuthSettings, DatabaseSettings, FastAPISettings, FastMCPSettings, TyperSettings
+from flowlab.modules.auth import MIGRATIONS_DIR, User
 from flowlab.modules.auth import _users as service
 from flowlab.modules.db.database import DB
+from flowlab.modules.migrator import publish_migrations
 
 PASSWORD = "correct horse battery staple"
 
@@ -74,3 +79,25 @@ def test_register_invalid_email_is_422(client: TestClient) -> None:
     response = client.post("/auth/register", json={"email": "not-an-email", "password": PASSWORD})
 
     assert response.status_code == 422
+
+
+def test_registration_can_be_turned_off(tmp_path: Path, jwt_secret: str, random_email: str) -> None:
+    publish_migrations(MIGRATIONS_DIR, tmp_path / "migrations")
+    app = FlowLab(
+        FastAPISettings(),
+        FastMCPSettings(),
+        TyperSettings(),
+        database_settings=DatabaseSettings(db_driver="sqlite", db_name=str(tmp_path / "test.sqlite")),
+        auth_settings=AuthSettings(jwt_secret=jwt_secret, auth_registration=False),
+        project_dir=tmp_path,
+    )
+
+    with app.lifespan():
+        app.migrator.up()
+
+    with TestClient(app) as client:
+        response = client.post("/auth/register", json={"email": random_email, "password": PASSWORD})
+
+        assert response.status_code == 404
+        assert "/auth/register" not in client.get("/openapi.json").json()["paths"]
+        assert client.post("/auth/login", json={"email": random_email, "password": PASSWORD}).status_code == 401

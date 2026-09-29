@@ -1,7 +1,7 @@
 import contextlib
 import hashlib
 import secrets
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import bcrypt
@@ -11,6 +11,11 @@ from flowlab._settings import AuthSettings
 from flowlab._state import get_app
 
 ALGORITHM = "HS256"
+
+# Every token flowlab signs carries a typ claim, and decoding demands the one the caller expects. A project that signs
+# its own tokens with JWT_SECRET (a participant link, a device token) gives them another typ, so they can never pass as
+# a login token for the user with the same id.
+ACCESS_TOKEN_TYPE = "access"
 
 MAX_PASSWORD_BYTES = 72
 
@@ -63,24 +68,32 @@ def burn_dummy_password_check(password: str) -> None:
         bcrypt.checkpw(encode_password(password), _DUMMY_HASH)
 
 
-def mint_token(subject: str) -> str:
+def mint_token(subject: str, typ: str = ACCESS_TOKEN_TYPE, ttl: timedelta | None = None) -> str:
     settings = get_auth_settings()
     now = datetime.now(UTC)
 
     return jwt.encode(
-        {"sub": subject, "iat": now, "exp": now + settings.jwt_ttl},
+        {"sub": subject, "typ": typ, "iat": now, "exp": now + (ttl or settings.jwt_ttl)},
         settings.jwt_secret,
         algorithm=ALGORITHM,
     )
 
 
-def decode_token(token: str) -> dict[str, Any]:
+def decode_token(token: str, typ: str = ACCESS_TOKEN_TYPE) -> dict[str, Any]:
     try:
-        payload: dict[str, Any] = jwt.decode(token, get_auth_settings().jwt_secret, algorithms=[ALGORITHM])
+        payload: dict[str, Any] = jwt.decode(
+            token,
+            get_auth_settings().jwt_secret,
+            algorithms=[ALGORITHM],
+            options={"require": ["sub", "typ", "iat", "exp"]},
+        )
     except jwt.ExpiredSignatureError:
         raise TokenExpired from None
     except jwt.InvalidTokenError:
         raise TokenInvalid from None
+
+    if payload["typ"] != typ:
+        raise TokenInvalid
 
     return payload
 

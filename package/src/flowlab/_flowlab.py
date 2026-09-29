@@ -192,7 +192,7 @@ class FlowLab:
             if self._user_model is None:
                 self._user_model = auth.User
 
-            self.include_module(auth.module(self._user_model))
+            self.include_module(auth.module(self._user_model, registration=auth_settings.auth_registration))
         elif user_model is not None:
             raise AuthNotEnabled
 

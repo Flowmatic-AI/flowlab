@@ -313,6 +313,7 @@ class AuthSettings(BaseSettings):
     jwt_secret: str = ""
     jwt_ttl_minutes: int = 60
     auth_rate_limit: str | None = "5/minute"
+    auth_registration: bool = True
 
     @property
     def jwt_ttl(self) -> timedelta:

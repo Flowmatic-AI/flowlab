@@ -60,7 +60,7 @@ def test_me_with_a_token_signed_by_the_wrong_secret_is_401_invalid_token(client:
 def test_me_with_an_expired_token_is_401_token_expired(client: TestClient, jwt_secret: str) -> None:
     now = datetime.now(UTC)
     token = jwt.encode(
-        {"sub": "1", "iat": now - timedelta(minutes=10), "exp": now - timedelta(minutes=1)},
+        {"sub": "1", "typ": "access", "iat": now - timedelta(minutes=10), "exp": now - timedelta(minutes=1)},
         jwt_secret,
         algorithm=ALGORITHM,
     )
@@ -87,7 +87,9 @@ def test_me_for_a_since_soft_deleted_user_is_401(client: TestClient, db: DB, ran
 
 def test_me_with_a_non_numeric_subject_is_401_invalid_token(client: TestClient, jwt_secret: str) -> None:
     now = datetime.now(UTC)
-    token = jwt.encode({"sub": "abc", "iat": now, "exp": now + timedelta(minutes=5)}, jwt_secret, algorithm=ALGORITHM)
+    token = jwt.encode(
+        {"sub": "abc", "typ": "access", "iat": now, "exp": now + timedelta(minutes=5)}, jwt_secret, algorithm=ALGORITHM
+    )
 
     response = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
 

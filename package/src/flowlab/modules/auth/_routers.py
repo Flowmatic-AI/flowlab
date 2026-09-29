@@ -32,9 +32,8 @@ def forget_attempts(name: str, identity: str) -> None:
         limiter.clear(name, identity, limit)
 
 
-def auth_router(user_model: type[BaseUser]) -> APIRouter:
+def auth_router(user_model: type[BaseUser], registration: bool = True) -> APIRouter:
     router = APIRouter(prefix="/auth", tags=["auth"])
-    registration = registration_schema(user_model)
     token = Token[user_model]  # type: ignore[valid-type]
 
     def register_route(request: Request, db: DB, body: Any) -> Any:
@@ -43,7 +42,7 @@ def auth_router(user_model: type[BaseUser]) -> APIRouter:
 
         return token(access_token=issue_token(user), user=user)
 
-    register_route.__annotations__["body"] = registration
+    register_route.__annotations__["body"] = registration_schema(user_model)
 
     def login_route(request: Request, db: DB, credentials: Credentials) -> Any:
         # Per IP and email, like Laravel: one attacker can't lock a user out from everywhere, and a successful
@@ -58,14 +57,16 @@ def auth_router(user_model: type[BaseUser]) -> APIRouter:
     def me_route(user: Auth) -> Any:
         return user
 
-    router.add_api_route(
-        "/register",
-        register_route,
-        methods=["POST"],
-        status_code=status.HTTP_201_CREATED,
-        response_model=token,
-        name="register",
-    )
+    if registration:
+        router.add_api_route(
+            "/register",
+            register_route,
+            methods=["POST"],
+            status_code=status.HTTP_201_CREATED,
+            response_model=token,
+            name="register",
+        )
+
     router.add_api_route("/login", login_route, methods=["POST"], response_model=token, name="login")
     router.add_api_route("/me", me_route, methods=["GET"], response_model=user_model, name="me")
 
