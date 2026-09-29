@@ -1,0 +1,112 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flowlab"
+version = "0.1.0"
+description = "An API framework on FastAPI that also serves an MCP server and a command runner from the same app, with database, cache, migrations, auth, queues and rate limiting built in."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["fastapi", "mcp", "typer", "framework", "database", "orm", "cache", "auth", "queue", "rate-limit"]
+
+authors = [
+    {name = "Flowmatic"},
+    {name = "UniForceMusic"},
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: FastAPI",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "fastapi>=0.135",
+    "fastmcp>=3.0",
+    "typer>=0.15",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "email-validator>=2.0",
+    "bcrypt>=4.0",
+    "PyJWT>=2.8",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]
+asyncpg = ["asyncpg>=0.29"]
+mysql = ["mysql-connector-python>=9.0"]
+redis = ["redis>=5.0"]
+valkey = ["valkey>=6.0"]
+memcached = ["pymemcache>=4.0"]
+all = [
+    "psycopg[binary]>=3.1",
+    "asyncpg>=0.29",
+    "mysql-connector-python>=9.0",
+    "redis>=5.0",
+    "valkey>=6.0",
+    "pymemcache>=4.0",
+]
+dev = [
+    "build>=1.2",
+    "twine>=5.0",
+    "pytest>=7.0",
+    "httpx>=0.27",
+    "mypy>=1.0",
+    "ruff>=0.1",
+    "psycopg[binary]>=3.1",
+    "mysql-connector-python>=9.0",
+    "redis>=5.0",
+    "valkey>=6.0",
+    "pymemcache>=4.0",
+]
+
+[project.scripts]
+flowlab = "flowlab._console:main"
+
+[project.urls]
+Homepage = "https://github.com/Flowmatic-AI/flowlab"
+Repository = "https://github.com/Flowmatic-AI/flowlab"
+Documentation = "https://github.com/Flowmatic-AI/flowlab/tree/main/package/docs"
+Issues = "https://github.com/Flowmatic-AI/flowlab/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+flowlab = ["py.typed", "**/migrations/*.py"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = ["--import-mode=importlib"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+ignore_missing_imports = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+ignore = ["UP040", "UP046", "UP047"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+    "flowlab.modules.auth.CurrentMCPUser",
+    "flowlab.modules.auth._mcp.CurrentMCPUser",
+    "flowlab.modules.ratelimit.MCPRateLimit",
+    "flowlab.modules.ratelimit._mcp.MCPRateLimit",
+]
